@@ -7,23 +7,30 @@ inapp_users=set()
 kind_users=set()
 lstk=["thank","please"]
 lstin=["shit","stupid","retarded","fuck"]
-usr_comment_good={}
-usr_comment_bad={}
+
+
 already_seenk=[]
 already_seenin=[]
 while True:
+    inapp_users=set()
+    kind_users=set()
+    usr_comment_good={}
+    usr_comment_bad={}
+    msg=""
     comments=r.get_comments('askreddit')
     for comment in comments:
         body=comment.body.lower()
         for wordsk in lstk:
             if body.find(wordsk) != -1:
-                usr_comment_good[comment.author]=body
-                kind_users.add(comment.author)
+                if comment.author not in already_seenk:
+                    usr_comment_good[comment.author]=body
+                    kind_users.add(comment.author)
                 break
         for wordsin in lstin:
             if body.find(wordsin) != -1:
-                usr_comment_bad[comment.author]=body
-                inapp_users.add(comment.author)
+                if comment.author not in already_seenin:
+                    usr_comment_bad[comment.author]=body
+                    inapp_users.add(comment.author)
                 break
     if len(kind_users)!=0:
         msg = "Kind users: "
@@ -48,5 +55,9 @@ while True:
     for i in usr_comment_good.keys():
         msg+="%s : %s"%(i, usr_comment_good[i])
         msg+="\n"
-    r.user.send_message('rbot42', msg)
+    if msg=="":
+        r.user.send_message('rbot42',"Nothing interesting going on right now!")
+
+    else:
+        r.user.send_message('rbot42', msg)
     time.sleep(15)
