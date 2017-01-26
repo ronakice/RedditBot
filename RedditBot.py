@@ -16,21 +16,29 @@ while True:
     usr_comment_good={}
     usr_comment_bad={}
     msg=""
-    comments=r.get_comments('askreddit')
-    for comment in comments:
+    ct=0
+    for comment in r.subreddit('uwaterloo').stream.comments():
         body=comment.body.lower()
+        ct+=1
+        print(ct)
+        #print(body)
         for wordsk in lstk:
             if body.find(wordsk) != -1:
                 if comment.author not in already_seenk:
+                    print("GOOOO")
                     usr_comment_good[comment.author]=body
                     kind_users.add(comment.author)
                 break
         for wordsin in lstin:
             if body.find(wordsin) != -1:
                 if comment.author not in already_seenin:
+                    print("ZOODDD")
                     usr_comment_bad[comment.author]=body
                     inapp_users.add(comment.author)
                 break
+        if ct==100:
+            break
+    print("HEY")
     if len(kind_users)!=0:
         msg = "Kind users: "
     for user in kind_users:
@@ -55,8 +63,10 @@ while True:
         msg+="%s : %s"%(i, usr_comment_good[i])
         msg+="\n"
     if msg=="":
-        r.user.send_message('rbot42',"Nothing interesting going on right now!")
+        print("go")
+        r.redditor('rbot42').message('TEST',"Nothing interesting going on right now!")
 
     else:
-        r.user.send_message('rbot42', msg)
+        print("lo")
+        r.redditor('rbot42').message('TEST',msg)
     time.sleep(15)
