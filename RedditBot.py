@@ -1,14 +1,13 @@
 import praw
 import time
 
-r=praw.Reddit('Simple comment parser')
-r.login()
+r = praw.Reddit(user_agent='Comment Extraction',
+                     client_id='Ho4Yr54TEqpV2Q', client_secret="EF-80ngO-IbsULqfc_rjsuperfk",
+                     username='rbot42', password='abc123')
 inapp_users=set()
 kind_users=set()
 lstk=["thank","please"]
-lstin=["shit","stupid","retarded","fuck"]
-
-
+lstin=["shit","stupid","retarded"]
 already_seenk=[]
 already_seenin=[]
 while True:
