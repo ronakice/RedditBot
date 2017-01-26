@@ -1,7 +1,7 @@
 import praw
 import time
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-r = praw.Reddit(user_agent='Comment Extraction',
+r = praw.Reddit(user_agent='Comment Extraction And Sentiment Analyser',
                      client_id='Ho4Yr54TEqpV2Q',
                      client_secret="EF-80ngO-IbsULqfc_rjsuperfk",
                      username='rbot42',
@@ -55,23 +55,22 @@ while True:
             already_seenin.append(user)
         msg +=".\n"
     if len(kind_users)!=0:
-        msg += "\nKind user comments: "
-
+        msg += "\nKind user comments: \n"
     for i in usr_comment_good.keys():
         sen=sid.polarity_scores(usr_comment_good[i])
-        msg+="%s : %s"%(i, usr_comment_good[i]+ "  Compound Sentiment: " +str(sen["compound"]))
+        msg+="%s : %s"%(i, usr_comment_good[i]+ "  Compound Sentiment: " +
+        str(sen["compound"]) +"\n")
         msg+="\n"
     if len(inapp_users)!=0:
-        msg += "\nInappropriate user comments: "
+        msg += "\nInappropriate user comments: \n"
     for i in usr_comment_bad.keys():
-
         sen=sid.polarity_scores(usr_comment_bad[i])
-
-        msg+="%s : %s"%(i, usr_comment_bad[i] + "  Compound Sentiment: " + str(sen["compound"]))
+        msg+="%s : %s"%(i, usr_comment_bad[i] + "  Compound Sentiment: " +
+        str(sen["compound"]))
         msg+="\n"
     if len(msg)==0:
-        r.redditor('rbot42').message('TEST',"Nothing interesting going on right now!")
-
+        r.redditor('rbot42').message('TEST',
+        "Nothing interesting going on right now!")
     else:
         print(msg)
         print(len(msg))
