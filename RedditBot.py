@@ -2,13 +2,17 @@ import praw
 import time
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 r = praw.Reddit(user_agent='Comment Extraction',
-                     client_id='Ho4Yr54TEqpV2Q', client_secret="EF-80ngO-IbsULqfc_rjsuperfk",
-                     username='rbot42', password='abc123')
+                     client_id='Ho4Yr54TEqpV2Q',
+                     client_secret="EF-80ngO-IbsULqfc_rjsuperfk",
+                     username='rbot42',
+                     password='abc123')
 sid = SentimentIntensityAnalyzer()
 inapp_users=set()
 kind_users=set()
-lstk=["thank","please"]
-lstin=["shit","stupid","retarded"]
+with open("wordkind.txt") as f:
+    lstk = f.read().split()
+with open("wordinapp.txt") as f:
+    lstin = f.read().split()
 already_seenk=[]
 already_seenin=[]
 while True:
@@ -18,10 +22,9 @@ while True:
     usr_comment_bad={}
     msg=""
     ct=0
-    for comment in r.subreddit('uwaterloo').stream.comments():
+    for comment in r.subreddit('all').stream.comments():
         body=comment.body.lower()
         ct+=1
-        print(ct)
         #print(body)
         for wordsk in lstk:
             if body.find(wordsk) != -1:
@@ -47,22 +50,25 @@ while True:
     if len(inapp_users)!=0:
         msg +="\nInappropriate users: "
     for user in inapp_users:
-        # print (user)
         if user not in already_seenin:
             msg += ", "+ str(user)
             already_seenin.append(user)
         msg +=".\n"
+    if len(kind_users)!=0:
+        msg += "\nKind user comments: "
+
+    for i in usr_comment_good.keys():
+        sen=sid.polarity_scores(usr_comment_good[i])
+        msg+="%s : %s"%(i, usr_comment_good[i]+ "  Compound Sentiment: " +str(sen["compound"]))
+        msg+="\n"
+    if len(inapp_users)!=0:
+        msg += "\nInappropriate user comments: "
     for i in usr_comment_bad.keys():
 
         sen=sid.polarity_scores(usr_comment_bad[i])
 
-        msg+="%s : %s"%(i, usr_comment_bad[i] + str(sen["compound"]))
+        msg+="%s : %s"%(i, usr_comment_bad[i] + "  Compound Sentiment: " + str(sen["compound"]))
         msg+="\n"
-    for i in usr_comment_good.keys():
-        sen=sid.polarity_scores(usr_comment_good[i])
-        msg+="%s : %s"%(i, usr_comment_good[i]+ str(sen["compound"]))
-        msg+="\n"
-
     if len(msg)==0:
         r.redditor('rbot42').message('TEST',"Nothing interesting going on right now!")
 
