@@ -1,6 +1,7 @@
 import praw
 import time
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import WordEmbFn
 r = praw.Reddit(user_agent='Comment Extraction And Sentiment Analyser',
                      client_id='Ho4Yr54TEqpV2Q',
                      client_secret="EF-80ngO-IbsULqfc_rjsuperfk",
